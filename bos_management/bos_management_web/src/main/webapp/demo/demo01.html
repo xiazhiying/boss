@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>案例一</title>
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="../js/easyui/themes/icon.css">
+<link rel="stylesheet" href="../js/ztree/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../js/ztree/jquery.ztree.all-3.5.js"></script>
+<script type="text/javascript">
+	/* 添加选项卡 */
+	function addTabs() {
+		var flag = $('#tt').tabs('exists', 'New Tab');
+		if (flag) {
+			$('#tt').tabs('select', 'New Tab');
+		} else {
+			$('#tt').tabs('add', {
+				title : 'New Tab',
+				closable : true 
+			});
+		}
+	};
+</script>
+<script type="text/javascript">
+	/* ztree */
+	$(function() {
+		var setting = {
+				data : {
+					simpleData : {
+						enable : true,
+						idKey : "id",
+						pIdKey : "pId",
+						rootPId : 0
+					}
+				},
+				callback: {
+					onClick: function(event, treeId, treeNode){
+						if(treeNode.pId != 0 ){
+							var flag = $('#tt').tabs('exists', treeNode.name);
+							if(flag){
+								$('#tt').tabs('select', treeNode.name);
+							}else{
+								$('#tt').tabs('add', {
+									title : treeNode.name,
+									closable : true,
+									content :'<iframe scrolling="auto" frameborder="0"  src="../'+treeNode.page+'" style="width:100%;height:100%;"></iframe>'
+								});
+							}
+						}
+					}
+				}
+
+			};
+		
+		/* 用Ajax动态获取数据 */
+		$.get("../data/menu.json",function(result){
+		$.fn.zTree.init($("#treeDemo"), setting, result);
+		});
+	});
+</script>
+</head>
+<body class="easyui-layout">
+
+	<!-- 正上方 -->
+	<div data-options="region:'north'" style="height: 100px"></div>
+
+	<!-- 正左方 -->
+	<div data-options="region:'west',split:true" title="West"
+		style="width: 200px;">
+		<!-- 分类 -->
+		<div id="aa" class="easyui-accordion" data-options="fit:true">
+			<div title="面板一">
+				<a id="btn" href="#" class="easyui-linkbutton"
+					data-options="iconCls:'icon-add'" onclick="addTabs()">添加选项卡</a>
+			</div>
+			<div title="面板二">
+				<ul id="treeDemo" class="ztree" ></ul>
+			</div>
+			<div title="Title3">content3</div>
+		</div>
+	</div>
+	<!-- 中间 -->
+	<div
+		data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
+		<div id="tt" class="easyui-tabs" style="width: 100%; height: 100%;">
+			<div title="选项一">tab1</div>
+			<div title="选项二" data-options="closable:true">tab2</div>
+			<div title="选项三" data-options="closable:true">tab3</div>
+		</div>
+	</div>
+
+</body>
+</html>

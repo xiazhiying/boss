@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import com.itheima.bos.domain.base.Courier;
 import com.itheima.bos.domain.base.Standard;
 import com.itheima.bos.service.base.CourierService;
+import com.itheima.bos.web.action.CommonAction;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -42,16 +43,19 @@ import net.sf.json.JsonConfig;
 @ParentPackage("struts-default")
 @Controller
 @Scope("prototype")
-public class CourierAction extends ActionSupport implements ModelDriven<Courier> {
+public class CourierAction extends CommonAction<Courier> {
 
-    private Courier model = new Courier();
-
-    @Override
-    public Courier getModel() {
-
-        return model;
+    public CourierAction() {
+        super(Courier.class);
     }
+    
 
+    /**
+     * serialVersionUID:TODO(用一句话描述这个变量表示什么).
+     * 
+     * @since JDK 1.6
+     */
+    private static final long serialVersionUID = 1L;
     @Autowired
     private CourierService service;
 
@@ -59,6 +63,7 @@ public class CourierAction extends ActionSupport implements ModelDriven<Courier>
             @Result(name = "success", location = "/pages/base/courier.html", type = "redirect")})
     // 储存快递员
     public String save() {
+        
         service.save(model);
         return SUCCESS;
     }
@@ -101,43 +106,39 @@ public class CourierAction extends ActionSupport implements ModelDriven<Courier>
                     CriteriaBuilder cb) {
                 // 这个集合用来装载多个查询条件
                 List<Predicate> list = new ArrayList<Predicate>();
-                if(StringUtils.isNotEmpty(courierNum)){
+                if (StringUtils.isNotEmpty(courierNum)) {
                     Predicate p1 = cb.equal(root.get("courierNum").as(String.class), courierNum);
                     list.add(p1);
                 }
-                if(StringUtils.isNotEmpty(type)){
+                if (StringUtils.isNotEmpty(type)) {
                     Predicate p2 = cb.equal(root.get("type").as(String.class), type);
                     list.add(p2);
                 }
-                if(StringUtils.isNotEmpty(company)){
+                if (StringUtils.isNotEmpty(company)) {
                     Predicate p3 = cb.like(root.get("company").as(String.class), company);
                     list.add(p3);
                 }
-                if (standard != null && StringUtils.isNotEmpty(standard.getName())){
+                if (standard != null && StringUtils.isNotEmpty(standard.getName())) {
                     Join<Object, Object> join = root.join("standard");
                     Predicate p4 = cb.equal(join.get("name").as(String.class), standard.getName());
                     list.add(p4);
                 }
 
                 if (list.size() > 0) {
-                    Predicate[] array = new Predicate[list.size()] ;
+                    Predicate[] array = new Predicate[list.size()];
                     list.toArray(array);
-                    return cb.and(array) ;
+                    return cb.and(array);
                 }
                 return null;
             }
         };
         Pageable pageable = new PageRequest(page - 1, rows);
-        Page<Courier> page = service.findll(specification,pageable);
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", page.getTotalElements());
-        map.put("rows", page.getContent());
+        Page<Courier> page = service.findll(specification, pageable);
+      
         //// 设置序列化时忽略的字段
         JsonConfig jsonConfig = new JsonConfig();
         jsonConfig.setExcludes(new String[] {"fixedAreas", "takeTime"});
-        String json = JSONObject.fromObject(map, jsonConfig).toString();
-        ServletActionContext.getResponse().setContentType("application/json;charset=UTF-8");
-        ServletActionContext.getResponse().getWriter().write(json);
+        page2json(page, jsonConfig);
         return NONE;
     }
 

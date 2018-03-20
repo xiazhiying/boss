@@ -121,9 +121,9 @@ public class AreaAction extends CommonAction<Area> {
         Pageable pageable = new PageRequest(page-1, rows);
         Page<Area> page = service.findAll(pageable);
        
-        JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes(new String[]{"subareas"});
-        page2json(page, jsonConfig);
+      /*  JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setExcludes(new String[]{"subareas"});*/
+        page2json(page, null);
         return NONE ;
     }
     private String q ;

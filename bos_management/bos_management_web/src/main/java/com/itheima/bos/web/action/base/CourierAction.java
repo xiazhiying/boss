@@ -155,5 +155,20 @@ public class CourierAction extends CommonAction<Courier> {
         service.batchDel(ids);
         return SUCCESS;
     }
+    //查询所有正常使用的快递员
+    /**
+     * ../../courierAction_findAvalible.action
+     * @throws IOException 
+     */
+    @Action("courierAction_findAvalible")
+    public String findAvalible() throws IOException{
+        List<Courier> list = service.findAvalible();
+        JsonConfig jsonConfig = new JsonConfig();
+        // 指定在生成json数据的时候要忽略的字段
+        jsonConfig.setExcludes(new String[] { "fixedAreas", "takeTime" });
+        list2json(list, jsonConfig);
+        return NONE ;
+    }
 
+    
 }

@@ -1,6 +1,7 @@
 package com.itheima.bos.service.base.impl;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,12 @@ public class CourierServiceImpl implements CourierService {
     public Page<Courier> findll(Specification<Courier> specification, Pageable pageable) {
           
         return repository.findAll(specification, pageable) ; 
+    }
+
+    @Override
+    public List<Courier> findAvalible() {
+          
+        return repository.findByDeltagIsNull() ;
     }
     
 

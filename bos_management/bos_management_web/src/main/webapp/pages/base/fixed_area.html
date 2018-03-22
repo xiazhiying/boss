@@ -109,7 +109,11 @@
 
 			$("#subAreaForm").submit();
 		} else {
-			$.messager.alert("警告", "请选择客户信息！！！", "warning")
+			$.messager.confirm('确认','您确定要清空该定区的分区吗？',function(r){    
+			    if (r){    
+			    	$("#subAreaForm").submit();    
+			    }    
+			}); 
 		}
 	}
 
@@ -180,7 +184,11 @@
 
 			$("#customerForm").submit();
 		} else {
-			$.messager.alert("警告", "请选择客户信息！！！", "warning")
+			$.messager.confirm('确认','您确定要清空该定区的客户吗？',function(r){    
+			    if (r){    
+			    	$("#customerForm").submit();    
+			    }    
+			});  
 		}
 	}
 

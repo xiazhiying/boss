@@ -114,14 +114,9 @@ public class FixedAreaAction extends CommonAction<FixedArea> {
     @Action(value = "fixedAreaAction_assignCustomers2FixedArea", results = {
             @Result(name = "success", location = "/pages/base/fixed_area.html", type = "redirect")})
     public String assignCustomers2FixedArea() {
-        if (customerIds == null) {
-            WebClient
-                    .create("http://localhost:8180/crm/webService/customerService/unbindByFixedAreaId")
-                    .type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)
-                    .query("fixedAreaId", model.getId())
-                    .put(null);
-            return SUCCESS;
-        }
+       if (customerIds == null) {
+           customerIds = new Long[]{0L};
+    }
         WebClient
                 .create("http://localhost:8180/crm/webService/customerService/assignCustomers2FixedArea")
                 .type(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)

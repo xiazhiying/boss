@@ -139,7 +139,7 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-
+		<!-- 引入SpringDataRedis坐标 -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-redis</artifactId>
@@ -318,8 +318,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
+		<!-- 引入阿里云发送短信的坐标 -->
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-core</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<pluginManagement>
@@ -338,5 +347,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-</project>
 </project>

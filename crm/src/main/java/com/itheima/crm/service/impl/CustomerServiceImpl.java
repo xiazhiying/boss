@@ -38,19 +38,47 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.findByFixedAreaId(fixedAreaId) ;
     }
     @Override
-    public void assignCustomers2FixedArea(String fixedAreaId, Long[] ids) {
-          
+    public void assignCustomers2FixedArea(String fixedAreaId, Long[] ids) {          
         //先根据  fixedAreaId 进行解绑
         if (StringUtils.isNotEmpty(fixedAreaId)) {
-            repository.unbindByFixedAreaId(fixedAreaId);
-          //根据id在去关联客户
-            if (ids != null && ids.length > 0) {
-                for (Long id : ids) {
-                    repository.bindFixedAreaById(fixedAreaId, id);
+            List<Customer> customers = repository.findByFixedAreaId(fixedAreaId);
+            System.out.println();
+            if (customers != null) {
+                for (Customer customer : customers) {
+                    customer.setFixedAreaId(null);
                 }
             }
+          //根据id在去关联客户
+            
+                for (Long id : ids) {
+                    if (id != 0) {
+                        Customer customer = repository.findOne(id);
+                        if (customer != null) {
+                            customer.setFixedAreaId(fixedAreaId);
+                        }
+                    }
+                }
+            
         }   
     }
+    @Override
+    public void save(Customer customer) {
+          
+        repository.save(customer);
+    }
+    @Override
+    public Customer checkTelephone(String telephone) {
+        Customer customer = repository.findByTelephone(telephone);
+        return customer ;
+    }
+    @Override
+    public void active(String telephone) {
+        Customer customer = repository.findByTelephone(telephone);
+        if (customer != null) {
+            customer.setType(1);
+        }
+    }
+   
 
 }
   

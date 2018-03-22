@@ -17,12 +17,12 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     List<Customer> findByFixedAreaIdIsNull();
     List<Customer> findByFixedAreaId(String fixedAreaId);
+   
+    Customer findByTelephone(String telephon);
     @Modifying
-    @Query("update Customer set fixedAreaId = null where fixedAreaId = ?")
-    void unbindByFixedAreaId(String fixedAreaId);
-    @Modifying
-    @Query("update Customer set fixedAreaId = ? where id = ?")
-    void bindFixedAreaById(String fixedAreaId, Long id);
+    @Query("update Customer set type = 1 where telephone = ?")
+    void active(String telephone);
+    
     
 }
   

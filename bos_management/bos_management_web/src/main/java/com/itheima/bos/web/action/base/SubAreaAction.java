@@ -71,7 +71,7 @@ public class SubAreaAction extends CommonAction<SubArea> {
 
         Page<SubArea> page = service.findAll(pageable);
         JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes(new String[]{"fixedArea" });
+        jsonConfig.setExcludes(new String[]{"fixedArea" ,"subareas"});
         page2json(page, jsonConfig );
         return NONE;
     }
@@ -85,7 +85,7 @@ public class SubAreaAction extends CommonAction<SubArea> {
     public String findSubAreaUnAssociated() throws IOException {
       List<SubArea> list = service.findSubAreaUnAssociated();
       JsonConfig jsonConfig = new JsonConfig();
-      jsonConfig.setExcludes(new String[]{"fixedArea" });
+      jsonConfig.setExcludes(new String[]{"fixedArea" ,"subareas"});
       list2json(list, jsonConfig);
         return NONE;
     }

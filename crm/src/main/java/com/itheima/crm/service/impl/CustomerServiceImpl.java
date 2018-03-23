@@ -78,6 +78,11 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setType(1);
         }
     }
+    @Override
+    public String findFixedAreaIdByAddress(String address) {
+          
+        return repository.findFixedAreaIdByAdddress(address) ;
+    }
    
 
 }

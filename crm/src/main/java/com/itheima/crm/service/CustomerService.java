@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import org.springframework.data.jpa.repository.Query;
+
 import com.itheima.crm.domain.Customer;
 
 /**  
@@ -43,6 +45,9 @@ public interface CustomerService {
     @PUT
     @Path("/active")
     void active(@QueryParam("telephone")String telephone);
+    @GET
+    @Path("/findFixedAreaIdByAddress")
+    String findFixedAreaIdByAddress(@QueryParam("address")String address);
 
 }
   

@@ -75,7 +75,20 @@
 	<context:component-scan base-package="com.itheima.bos.service,com.itheima.bos.web" />
 
 	<!-- 开启事务注解 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<!-- 修改以下配置,强制使用cglib : proxy-target-class="true"-->
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+	<!-- 基于spring自动代理方式为Service类创建代理方式,实现权限控制 -->
+<bean
+    class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+    <!-- 强制使用cglib方式创建代理对象 -->
+    <property name="proxyTargetClass" value="true"></property>
+</bean>
+<!-- 配置切面 -->
+<bean
+    class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    <property name="securityManager" ref="securityManager"></property>
+</bean>
+	
 	<!--
 		#########################################################
 		指定Spring Data JPA要进行扫描的包,该包中的类框架会自动为其创建代理
@@ -99,6 +112,92 @@
 			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor"></bean>
 		</jaxrs:outInterceptors>
 	</jaxrs:server>
+	<!--
+		工厂bean,初始化shiro框架提供的filter
+	-->
+	<!-- 注册shiro框架的过滤器
+		id一定要和web.xml中声明的DelegatingFilterProxy过滤器名字一致
+	-->
+	<bean id="shiroFilterFactoryBean" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 注入shiro框架核心对象,安全管理器 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 指定要验证的页面 -->
+		<property name="loginUrl" value="/login.html" />
+		<!-- 指定权限验证成功后,跳转页面 -->
+		<property name="successUrl" value="/index.html" />
+		<!-- 指定权限不足页面 -->
+		<property name="unauthorizedUrl" value="/unauthorized.html" />
+		<!-- 指定URL拦截规则 -->
+		<!--
+			authc:代表shiro框架提供的一个过滤器，这个过滤器用于判断当前用户是否已经完成认证，
+			如果当前用户已经认证，就放行
+			如果当前用户没有认证，跳转到登录页面
+			anon:代表shiro框架提供的一个过滤器，允许匿名访问
+		-->
+		<property name="filterChainDefinitions">
+			<value>
+			<!-- 登陆拦截 -->
+				/css/* = anon
+				/data/* = anon
+				/images/* = anon
+				/js/** = anon
+				/validatecode.jsp* = anon
+				/userAction_login.action =anon
+				/** = authc
+			</value>
+		</property>
+	</bean>
+	<!-- 注册安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+			<!-- 注入realm -->
+		<property name="realm" ref="userRealm"></property>
+		<!-- 注入缓存管理器 -->
+		<property name="cacheManager" ref="cacheManager"></property>
+	</bean>
+	<!--  注册缓存管理器  -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<!-- 指定配置文件的位置 -->
+			<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
+	</bean>
+	
+	
+	
+	<!-- 注册任务详情,通过反射的方式调用目标类的目标方法 -->
+	<bean id="jobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<!-- 注入目标对象 -->
+		<property name="targetObject" ref="workbillJob"></property>
+		<!-- 注入目标方法 -->
+		<property name="targetMethod" value="sendMail"></property>
+	</bean>
+	<!-- 注册触发器,可以理解为这是一个闹钟 -->
+	<bean id="emailTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<!-- 指定触发的规则.闹钟在什么时候响起 -->
+		<property name="cronExpression">
+			<!-- 每隔五秒钟执行一次 -->
+			<value>0/5 * * * * ? 2099</value>
+		</property>
+		<!-- 注入任务详情,闹钟响起的时候要做什么事情 -->
+		<property name="jobDetail" ref="jobDetail"></property>
+	</bean>
+	<!--
+		spring提供的一个工厂类
+		任务工厂类
+		可以简单理解为这是一台手机
+	-->
+	<bean
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<!--
+			注入触发器
+			可以简单理解为闹钟的集合
+		-->
+		<property name="triggers">
+			<!-- 指定具体的触发器,可以简单理解为具体的一个闹钟 -->
+			<list>
+				<ref bean="emailTrigger" />
+			</list>
 
-
-</beans>
+		</property>
+	</bean>
+</beans> 

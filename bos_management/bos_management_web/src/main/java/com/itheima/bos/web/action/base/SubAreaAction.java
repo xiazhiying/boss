@@ -96,7 +96,7 @@ public class SubAreaAction extends CommonAction<SubArea> {
     public String findSubAreaAssociated() throws IOException {
         List<SubArea> list = service.findSubAreaAssociated(model.getId());
         JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes(new String[] {"fixedArea"});
+        jsonConfig.setExcludes(new String[] {"fixedArea","subareas"});
         list2json(list, jsonConfig);
         return NONE;
     }

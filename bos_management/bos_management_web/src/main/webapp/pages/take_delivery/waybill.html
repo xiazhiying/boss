@@ -30,10 +30,18 @@
 					}
 				});
 			});
+			function findOne() {
+				//获取参数
+				var wayBillNum = $("#wayBillNum").val();
+				$.post("../../waybillAction_findByWayBillNum.action",{wayBillNum : wayBillNum},function(date){
+					
+				});
+			}
 		</script>
 	</head>
 
 	<body>
+	<form action="#" method="post" id="orderForm">
 		<div class="datagrid-toolbar">
 			<a id="add" icon="icon-add" href="#" class="easyui-linkbutton" plain="true">新增</a>
 			<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
@@ -41,9 +49,12 @@
 		</div>
 		<div style="width:95%;margin:10px auto">
 			<div class="table-top">
+			
 				<table class="table-edit" width="95%">
 					<tr class="title">
 						<td colspan="6">单号信息</td>
+						<!--提供隐藏域 装载id -->
+						<input type="hidden" name="id" />
 					</tr>
 					<tr>
 						<td>订单号</td>
@@ -53,7 +64,8 @@
 						</td>
 						<td>运单号</td>
 						<td>
-							<input type="text" name="wayBillNum" id="wayBillNum"/>
+							<input type="text" name="wayBillNum" id="wayBillNum" />
+							<input type="button" value="查询" onclick="findOne()" />
 						</td>
 					</tr>
 					<tr>
@@ -267,6 +279,7 @@
 			</div>
 			<div class="clearfix"></div>		
 		</div>
+		</form>
 	</body>
 
 </html>

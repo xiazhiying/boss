@@ -34,6 +34,9 @@
 	function doDelete() {
 		alert("删除...");
 	}
+	function doExport(){
+		window.location.href="../../areaAction_exportExcel.action"
+	}
 
 	//工具栏
 	var toolbar = [ {
@@ -55,6 +58,11 @@
 		id : 'button-import',
 		text : '导入',
 		iconCls : 'icon-redo'
+	},{
+		id : 'button-export',
+		text : '导出',
+		iconCls : 'icon-undo',
+		handler : doExport
 	} ];
 	// 定义列
 	var columns = [ [ {
